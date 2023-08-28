@@ -1,0 +1,34 @@
+version: "3.3"
+
+services:
+  database:
+    image: mysql:8.1
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - "5306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: gab123.
+      MYSQL_DATABASE: lg_wordpress
+      MYSQL_USER: root_lg
+      MYSQL_PASSWORD: lg_wordpress.
+  wordpress:
+    depends_on:
+      - database
+    #image: wordpress:6.3
+    image: wordpress:latest
+    volumes:
+      - ./src/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./src/plugins:/var/www/html/wp-content/plugins
+      - ./src/uploads:/var/www/html/wp-content/uploads
+      - ./src/themes:/var/www/html/wp-content/themes
+    ports:
+      - "7000:80"
+    environment:
+      WORDPRESS_DB_HOST: database
+      WORDPRESS_DB_USER: root_lg
+      WORDPRESS_DB_PASSWORD: lg_wordpress.
+      WORDPRESS_DB_NAME: lg_wordpress
+      WORDPRESS_TABLE_PREFIX: lg
+    restart: always
